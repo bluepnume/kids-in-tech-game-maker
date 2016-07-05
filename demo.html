@@ -1,0 +1,89 @@
+
+<body>
+	<script src="./gamebuilder.js"></script>
+	<script>
+
+		var myGame = new Game();
+
+		myGame.setBackground('http://www.crystalinks.com/rapeofpersophone.jpg');
+
+		var hero = new Character({
+			src: 'http://kingofwallpapers.com/hercules/hercules-005.jpg',
+			height: 200,
+			width: 100,
+			x: 50,
+			y: 50
+		});
+
+		var enemy = new Character({
+			src: 'http://vignette3.wikia.nocookie.net/disney/images/2/27/Hades_Disney_transparent.png/revision/latest?cb=20130616161031',
+			height: 200,
+			width: 140,
+			x: 500,
+			y: 50
+		});
+
+		myGame.add(hero);
+		myGame.add(enemy);
+
+		var moveAmount = 3;
+
+		var enemyDestination;
+
+		myGame.eachFrame(function() {
+
+			if (myGame.isKeyPressed('up')) {
+				hero.moveUp(moveAmount);
+			}
+
+			if (myGame.isKeyPressed('down')) {
+				hero.moveDown(moveAmount);
+			}
+
+			if (myGame.isKeyPressed('left')) {
+				hero.moveLeft(moveAmount);
+			}
+
+			if (myGame.isKeyPressed('right')) {
+				hero.moveRight(moveAmount);
+			}
+
+			if (enemyDestination) {
+
+				enemy.move(enemyDestination.direction, enemyDestination.speed);
+				enemyDestination.amount -= enemyDestination.speed;
+
+				if (enemyDestination.amount <= 0) {
+					enemyDestination = null;
+				}
+
+			} else {
+				enemyDestination = {
+					direction: randomChoice(['up', 'right', 'down', 'left']),
+					amount: randomNumber(100, 200),
+					speed: randomNumber(2, 5)
+				}
+			}
+
+			if (hero.isTouching(enemy)) {
+				hero.setImage('http://www.destinyislands.com/images/official-artwork/kh/character-renders/kh-hercules.jpg');
+				enemy.setImage('http://www.disneyclips.com/imagesnewb/images/cliphadestriumph.gif');
+
+				setTimeout(function() {
+					enemy.hide();
+					hero.setImage('http://kingofwallpapers.com/hercules/hercules-005.jpg');
+					enemy.setImage('http://vignette3.wikia.nocookie.net/disney/images/2/27/Hades_Disney_transparent.png/revision/latest?cb=20130616161031')
+				}, 500);
+
+				setTimeout(function() {
+					enemy.show();
+				}, 5000);
+			}
+
+		});
+
+		myGame.start();
+
+	</script>
+</body>
+
