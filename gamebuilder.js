@@ -1,5 +1,5 @@
 
-var INTERVAL = 1000 / 60;
+var INTERVAL = 1000 / 30;
 var WIDTH = 800
 var HEIGHT = 500;
 
@@ -38,9 +38,12 @@ function randomNumber (min, max) {
 
 function Game(options) {
     this.options = options || {};
+    WIDTH = this.options.width || WIDTH;
+    HEIGHT = this.options.height || HEIGHT;
     this.callbacks = [];
     this.activeKeys = {};
     this.keyPressCallbacks = {};
+    this.renderables = [];
 }
 
 Game.prototype.createCanvas = function() {
@@ -61,6 +64,8 @@ Game.prototype.createCanvas = function() {
     canvas.style.backgroundSize = WIDTH + 'px ' + HEIGHT + 'px';
     canvas.style.height = HEIGHT + 'px';
     canvas.style.width = WIDTH + 'px';
+
+    console.log(WIDTH + 'px ' + HEIGHT + 'px')
 
     if (this.background) {
         canvas.style.background = 'url(' + this.background + ')';
@@ -107,6 +112,12 @@ Game.prototype.start = function() {
 
     this.interval = setInterval(function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (var i=0; i<this.renderables.length; i++) {
+            this.renderables[i].update(this, this.context);
+            this.renderables[i].render(this, this.context);
+        }
+
         for (var i=0; i<this.callbacks.length; i++) {
             this.callbacks[i].call(this);
         }
@@ -138,9 +149,7 @@ Game.prototype.eachInterval = function(interval, callback) {
 };
 
 Game.prototype.add = function(renderable) {
-    this.eachFrame(function() {
-        renderable.render(this.context);
-    });
+    this.renderables.push(renderable);
 };
 
 Game.prototype.setBackground = function(url) {
@@ -149,6 +158,36 @@ Game.prototype.setBackground = function(url) {
         this.canvas.style.background = 'url(' + this.background + ')';
     }
 };
+
+
+
+
+
+
+function Wall(options) {
+    this.x = options.x;
+    this.width = options.width || 0;
+    this.y = options.y;
+    this.height = options.height || 0;
+    this.noCollide = true;
+
+    this.show = true;
+}
+
+Wall.prototype.update = function(game, context) {
+
+}
+
+
+Wall.prototype.render = function(game, context) {
+    context.beginPath();
+    context.moveTo(this.x, this.y);
+    context.lineTo(this.x + this.width, this.y + this.height);
+    context.stroke();
+}
+
+
+
 
 
 function Character(options) {
@@ -244,13 +283,23 @@ Character.prototype.hasDestination = function() {
     return Boolean(this.destination);
 };
 
-Character.prototype.render = function(context) {
+Character.prototype.update = function(game, context) {
 
     if (this.destination) {
         this.move(this.destination.direction, this.destination.speed);
         this.destination.amount -= this.destination.speed;
         if (this.destination.amount <= 0) {
             delete this.destination;
+        }
+    }
+
+    for (var i=0; i<game.renderables.length; i++) {
+        if (game.renderables[i] !== this && game.renderables[i].noCollide && this.oldx && this.oldy) {
+            if (this.isTouching(game.renderables[i])) {
+                this.x = this.oldx;
+                this.y = this.oldy;
+                return;
+            }
         }
     }
 
@@ -278,7 +327,9 @@ Character.prototype.render = function(context) {
     if (!this.display) {
         return;
     }
+};
 
+Character.prototype.render = function(game, context) {
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
 };
 

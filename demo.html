@@ -11,7 +11,18 @@
 		var hercules_fighting_picture = 'http://www.destinyislands.com/images/official-artwork/kh/character-renders/kh-hercules.jpg';
 
 		var hades_picture = 'http://vignette3.wikia.nocookie.net/disney/images/2/27/Hades_Disney_transparent.png/revision/latest?cb=20130616161031';
-		var hades_fighting_picture = 'http://www.disneyclips.com/imagesnewb/images/cliphadestriumph.gif';
+		var hades_fighting_picture = 'http://i.imgur.com/KYNHQCy.gif';
+
+
+		var wall1 = new Wall({
+			x: 0,
+			y: 400,
+			width: 500,
+			height: 5
+		});
+
+		myGame.add(wall1);
+
 
 		var hero = new Character({
 			src: hercules_picture,
@@ -73,6 +84,8 @@
 					enemy.show();
 				}, 5000);
 			}
+
+
 		});
 
 		myGame.start();
