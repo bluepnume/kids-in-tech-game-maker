@@ -5,10 +5,16 @@
 
 		var myGame = new Game();
 
-		myGame.setBackground('http://www.crystalinks.com/rapeofpersophone.jpg');
+		myGame.setBackground('http://vignette4.wikia.nocookie.net/disney/images/8/85/Hercules-br-disneyscreencaps.com-9886.jpg/revision/latest?cb=20140909150606');
+
+		var hercules_picture = 'http://kingofwallpapers.com/hercules/hercules-005.jpg';
+		var hercules_fighting_picture = 'http://www.destinyislands.com/images/official-artwork/kh/character-renders/kh-hercules.jpg';
+
+		var hades_picture = 'http://vignette3.wikia.nocookie.net/disney/images/2/27/Hades_Disney_transparent.png/revision/latest?cb=20130616161031';
+		var hades_fighting_picture = 'http://www.disneyclips.com/imagesnewb/images/cliphadestriumph.gif';
 
 		var hero = new Character({
-			src: 'http://kingofwallpapers.com/hercules/hercules-005.jpg',
+			src: hercules_picture,
 			height: 200,
 			width: 100,
 			x: 50,
@@ -16,7 +22,7 @@
 		});
 
 		var enemy = new Character({
-			src: 'http://vignette3.wikia.nocookie.net/disney/images/2/27/Hades_Disney_transparent.png/revision/latest?cb=20130616161031',
+			src: hades_picture,
 			height: 200,
 			width: 140,
 			x: 500,
@@ -27,8 +33,6 @@
 		myGame.add(enemy);
 
 		var moveAmount = 3;
-
-		var enemyDestination;
 
 		myGame.eachFrame(function() {
 
@@ -48,38 +52,27 @@
 				hero.moveRight(moveAmount);
 			}
 
-			if (enemyDestination) {
-
-				enemy.move(enemyDestination.direction, enemyDestination.speed);
-				enemyDestination.amount -= enemyDestination.speed;
-
-				if (enemyDestination.amount <= 0) {
-					enemyDestination = null;
-				}
-
-			} else {
-				enemyDestination = {
-					direction: randomChoice(['up', 'right', 'down', 'left']),
-					amount: randomNumber(100, 200),
-					speed: randomNumber(2, 5)
-				}
+			if (!enemy.hasDestination()) {
+				var direction = randomChoice(['up', 'right', 'down', 'left']);
+				var amount    = randomNumber(100, 200);
+				var speed     = randomNumber(2, 5);
+				enemy.setDestination(direction, amount, speed);
 			}
 
 			if (hero.isTouching(enemy)) {
-				hero.setImage('http://www.destinyislands.com/images/official-artwork/kh/character-renders/kh-hercules.jpg');
-				enemy.setImage('http://www.disneyclips.com/imagesnewb/images/cliphadestriumph.gif');
+				hero.setImage(hercules_fighting_picture);
+				enemy.setImage(hades_fighting_picture);
 
 				setTimeout(function() {
 					enemy.hide();
-					hero.setImage('http://kingofwallpapers.com/hercules/hercules-005.jpg');
-					enemy.setImage('http://vignette3.wikia.nocookie.net/disney/images/2/27/Hades_Disney_transparent.png/revision/latest?cb=20130616161031')
+					hero.setImage(hercules_picture);
+					enemy.setImage(hades_picture)
 				}, 500);
 
 				setTimeout(function() {
 					enemy.show();
 				}, 5000);
 			}
-
 		});
 
 		myGame.start();

@@ -58,6 +58,9 @@ Game.prototype.createCanvas = function() {
     canvas.style.marginLeft = '-' + WIDTH / 2 + 'px';
     canvas.style.marginTop = '-' + HEIGHT / 2 + 'px';
     canvas.style.backgroundColor = '#fff';
+    canvas.style.backgroundSize = WIDTH + 'px ' + HEIGHT + 'px';
+    canvas.style.height = HEIGHT + 'px';
+    canvas.style.width = WIDTH + 'px';
 
     if (this.background) {
         canvas.style.background = 'url(' + this.background + ')';
@@ -230,15 +233,25 @@ Character.prototype.isTouching = function(char) {
 };
 
 Character.prototype.setDestination = function(direction, amount, speed) {
-    this.direction = direction;
-    this.amount = amount;
-    this.speed = speed || 1;
+    this.destination = {
+        direction: direction,
+        amount: amount,
+        speed: speed
+    };
+};
+
+Character.prototype.hasDestination = function() {
+    return Boolean(this.destination);
 };
 
 Character.prototype.render = function(context) {
 
-    if (this.direction) {
-
+    if (this.destination) {
+        this.move(this.destination.direction, this.destination.speed);
+        this.destination.amount -= this.destination.speed;
+        if (this.destination.amount <= 0) {
+            delete this.destination;
+        }
     }
 
     if (this.x < 0) {
