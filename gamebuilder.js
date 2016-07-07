@@ -61,14 +61,16 @@ Game.prototype.createCanvas = function() {
     canvas.style.marginLeft = '-' + WIDTH / 2 + 'px';
     canvas.style.marginTop = '-' + HEIGHT / 2 + 'px';
     canvas.style.backgroundColor = '#fff';
-    canvas.style.backgroundSize = WIDTH + 'px ' + HEIGHT + 'px';
     canvas.style.height = HEIGHT + 'px';
     canvas.style.width = WIDTH + 'px';
 
     console.log(WIDTH + 'px ' + HEIGHT + 'px')
 
     if (this.background) {
-        canvas.style.background = 'url(' + this.background + ')';
+        canvas.style.backgroundImage = 'url(' + this.background + ')';
+        canvas.style.backgroundSize = WIDTH + 'px ' + HEIGHT + 'px';
+        canvas.style.backgroundRepeat = 'no-repeat';
+        console.log(canvas.style.backgroundRepeat);
     }
 
     document.body.appendChild(canvas);
@@ -155,7 +157,7 @@ Game.prototype.add = function(renderable) {
 Game.prototype.setBackground = function(url) {
     this.background = url;
     if (this.canvas) {
-        this.canvas.style.background = 'url(' + this.background + ')';
+        this.canvas.style.backgroundImage = 'url(' + this.background + ')';
     }
 };
 
@@ -268,6 +270,8 @@ Character.prototype.isTouching = function(char) {
         return true;
     }
 
+    this.noCollide = true;
+
     return false;
 };
 
@@ -333,3 +337,4 @@ Character.prototype.render = function(game, context) {
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
 };
 
+Item = Character;
