@@ -44,6 +44,7 @@ function Game(options) {
     this.activeKeys = {};
     this.keyPressCallbacks = {};
     this.renderables = [];
+    this.backup = [];
 }
 
 Game.prototype.createCanvas = function() {
@@ -124,10 +125,13 @@ Game.prototype.start = function() {
             this.callbacks[i].call(this);
         }
     }.bind(this), INTERVAL);
+
+    this.audio.play();
 };
 
 Game.prototype.stop = function() {
     clearInterval(this.interval);
+    this.audio.pause();
 };
 
 Game.prototype.eachFrame = function(callback) {
@@ -152,6 +156,7 @@ Game.prototype.eachInterval = function(interval, callback) {
 
 Game.prototype.add = function(renderable) {
     this.renderables.push(renderable);
+    this.backup.push(renderable);
 };
 
 Game.prototype.setBackground = function(url) {
@@ -161,9 +166,41 @@ Game.prototype.setBackground = function(url) {
     }
 };
 
+Game.prototype.setVictoryBackground = function (url) {
+    this.victoryBackground = url;
+};
 
+Game.prototype.setDefeatBackground = function (url) {
+    this.defeatBackground = url;
+};
 
+Game.prototype.youWon = function () {
+    this.setBackground(this.victoryBackground);
 
+    // if(confirm('You Won! \nPlay again?')) {        
+
+    // }
+    // else {
+    //     return;
+    // }
+};
+
+Game.prototype.youLost = function () {
+    this.setBackground(this.defeatBackground);
+
+    // if(confirm('You Lost! \nPlay again?')) {
+        
+    // }
+    // else {
+    //     return;
+    // }
+};
+
+Game.prototype.setAudio = function(path) {
+    if (path) {
+        this.audio = new Audio(path);
+    }    
+}
 
 
 function Wall(options) {
