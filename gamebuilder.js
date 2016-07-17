@@ -359,7 +359,7 @@ Character.prototype.isTouching = function(char) {
 
     // Yeah I'm lazy and googled this, sue me.
 
-    if (!this.show || !char.show) {
+    if (!this.display || !char.display) {
         return false;
     }
 
