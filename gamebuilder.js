@@ -44,7 +44,6 @@ function Game(options) {
     this.activeKeys = {};
     this.keyPressCallbacks = {};
     this.renderables = [];
-    this.backup = [];
 }
 
 Game.prototype.createCanvas = function() {
@@ -179,7 +178,6 @@ Game.prototype.eachInterval = function(interval, callback) {
 
 Game.prototype.add = function(renderable) {
     this.renderables.push(renderable);
-    this.backup.push(renderable);
 };
 
 Game.prototype.setBackground = function(url) {
@@ -236,13 +234,8 @@ function Wall(options) {
     this.show = true;
 }
 
-Wall.prototype.update = function(game, context) {
-
-}
-
-Wall.prototype.resetPosition = function () {
-
-}
+Wall.prototype.update = function(game, context) {}
+Wall.prototype.reset = function () {}
 
 
 Wall.prototype.render = function(game, context) {
