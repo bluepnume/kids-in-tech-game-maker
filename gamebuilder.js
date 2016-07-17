@@ -133,9 +133,9 @@ Game.prototype.start = function() {
 };
 
 Game.prototype.restart = function () {
-    // resetting the position of all renderable components. 
+    // resetting the position of all renderable components.
     for (var i=0; i < this.renderables.length; i++) {
-        this.renderables[i].resetPosition();
+        this.renderables[i].reset();
     }
 
     // if Interval has been cleared, just start. Else, clear and then start.
@@ -396,7 +396,7 @@ Character.prototype.render = function(game, context) {
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
 };
 
-Character.prototype.resetPosition = function () {
+Character.prototype.reset = function () {
     this.x = this.startX;
     this.y = this.startY;
 
