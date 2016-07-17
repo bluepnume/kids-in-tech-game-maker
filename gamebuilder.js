@@ -146,6 +146,11 @@ Game.prototype.restart = function () {
         this.stop();
         this.start();
     }
+
+    // reset game background
+    if (this.background) {
+        this.setBackground(this.background);
+    }
 }
 
 Game.prototype.stop = function() {
@@ -196,31 +201,25 @@ Game.prototype.setDefeatBackground = function (url) {
 };
 
 Game.prototype.youWon = function () {
-    this.setBackground(this.victoryBackground);
+    if (this.victoryBackground && this.canvas) {
+        this.canvas.style.backgroundImage = 'url(' + this.victoryBackground + ')';
+    }
 
-    // if(confirm('You Won! \nPlay again?')) {        
-
-    // }
-    // else {
-    //     return;
-    // }
+    this.stop();
 };
 
 Game.prototype.youLost = function () {
-    this.setBackground(this.defeatBackground);
+     if (this.defeatBackground && this.canvas) {
+        this.canvas.style.backgroundImage = 'url(' + this.defeatBackground + ')';
+    }
 
-    // if(confirm('You Lost! \nPlay again?')) {
-        
-    // }
-    // else {
-    //     return;
-    // }
+    this.stop();
 };
 
 Game.prototype.setAudio = function(path) {
     if (path) {
         this.audio = new Audio(path);
-    }    
+    }
 }
 
 
