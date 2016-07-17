@@ -245,7 +245,51 @@ Wall.prototype.render = function(game, context) {
     context.stroke();
 }
 
+function ScoreBoard(options) {
+    this.options = options || {};
+    this.x = options.x;
+    this.y = options.y;
+    this.width = options.width || 0;
+    this.height = options.height || 0;
+    this.score = options.score || 0;
+    this.noCollide = false;
+    this.display = true;
+}
 
+ScoreBoard.prototype.update = function () {}
+ScoreBoard.prototype.render = function (game, context) {
+    context.font = this.width + " " + this.height;
+    context.fillStyle = 'white';
+    context.fillText('SCORE: ' + (this.score || 0), this.x, this.y);
+}
+
+ScoreBoard.prototype.hide = function () {
+    this.display = false;
+}
+
+ScoreBoard.prototype.show = function () {
+    this.display = true;
+}
+
+ScoreBoard.prototype.add = function (points) {
+    if (points) {
+        this.score += points;
+    }
+}
+
+ScoreBoard.prototype.substract = function (points) {
+    if (points) {
+        this.score -= points;
+    }
+}
+
+ScoreBoard.prototype.reset = function () {
+    this.score = this.options.score || 0;
+}
+
+ScoreBoard.prototype.getScore = function () {
+    return this.score;
+}
 
 
 
