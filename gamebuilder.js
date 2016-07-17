@@ -117,8 +117,10 @@ Game.prototype.start = function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         for (var i=0; i<this.renderables.length; i++) {
-            this.renderables[i].update(this, this.context);
-            this.renderables[i].render(this, this.context);
+            if (this.renderables[i].display) {
+                this.renderables[i].update(this, this.context);
+                this.renderables[i].render(this, this.context);
+            }
         }
 
         for (var i=0; i<this.callbacks.length; i++) {
