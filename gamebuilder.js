@@ -126,7 +126,9 @@ Game.prototype.start = function() {
         }
     }.bind(this), INTERVAL);
 
-    this.audio.play();
+    if (this.audio) {
+        this.audio.play();
+    }
 };
 
 Game.prototype.stop = function() {
