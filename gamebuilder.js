@@ -1,6 +1,6 @@
 
 var INTERVAL = 1000 / 30;
-var WIDTH = 800
+var WIDTH = 800;
 var HEIGHT = 500;
 
 var KEYS = {
