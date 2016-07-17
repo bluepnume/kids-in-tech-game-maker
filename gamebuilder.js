@@ -133,9 +133,28 @@ Game.prototype.start = function() {
     }
 };
 
+Game.prototype.restart = function () {
+    // resetting the position of all renderable components. 
+    for (var i=0; i < this.renderables.length; i++) {
+        this.renderables[i].resetPosition();
+    }
+
+    // if Interval has been cleared, just start. Else, clear and then start.
+    if (!this.interval) {
+        this.start();
+    }
+    else {
+        this.stop();
+        this.start();
+    }
+}
+
 Game.prototype.stop = function() {
     clearInterval(this.interval);
-    this.audio.pause();
+    delete this.interval;
+    if (this.audio) {
+        this.audio.pause();
+    }
 };
 
 Game.prototype.eachFrame = function(callback) {
@@ -221,6 +240,10 @@ Wall.prototype.update = function(game, context) {
 
 }
 
+Wall.prototype.resetPosition = function () {
+
+}
+
 
 Wall.prototype.render = function(game, context) {
     context.beginPath();
@@ -240,6 +263,8 @@ function Character(options) {
     this.image.src = options.src;
     this.height = options.height;
     this.width = options.width;
+    this.startX = options.x;
+    this.startY = options.y;
     this.x = options.x;
     this.y = options.y;
 
@@ -377,5 +402,14 @@ Character.prototype.update = function(game, context) {
 Character.prototype.render = function(game, context) {
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
 };
+
+Character.prototype.resetPosition = function () {
+    this.x = this.startX;
+    this.y = this.startY;
+
+    if (this.direction) {
+        delete this.direction;
+    }
+}
 
 Item = Character;
