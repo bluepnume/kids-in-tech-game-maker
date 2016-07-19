@@ -248,8 +248,7 @@ function ScoreBoard(options) {
     this.options = options || {};
     this.x = options.x;
     this.y = options.y;
-    this.width = options.width || 0;
-    this.height = options.height || 0;
+    this.font = options.font;
     this.score = options.score || 0;
     this.noCollide = false;
     this.display = true;
@@ -257,7 +256,7 @@ function ScoreBoard(options) {
 
 ScoreBoard.prototype.update = function () {}
 ScoreBoard.prototype.render = function (game, context) {
-    context.font = this.width + " " + this.height;
+    context.font = this.font;
     context.fillStyle = 'white';
     context.fillText('SCORE: ' + (this.score || 0), this.x, this.y);
 }
