@@ -1,6 +1,6 @@
 
 var INTERVAL = 1000 / 30;
-var WIDTH = 800
+var WIDTH = 800;
 var HEIGHT = 500;
 
 var KEYS = {
@@ -116,18 +116,49 @@ Game.prototype.start = function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         for (var i=0; i<this.renderables.length; i++) {
-            this.renderables[i].update(this, this.context);
-            this.renderables[i].render(this, this.context);
+            if (this.renderables[i].display) {
+                this.renderables[i].update(this, this.context);
+                this.renderables[i].render(this, this.context);
+            }
         }
 
         for (var i=0; i<this.callbacks.length; i++) {
             this.callbacks[i].call(this);
         }
     }.bind(this), INTERVAL);
+
+    if (this.audio) {
+        this.audio.play();
+    }
 };
+
+Game.prototype.restart = function () {
+    // resetting the position of all renderable components.
+    for (var i=0; i < this.renderables.length; i++) {
+        this.renderables[i].reset();
+    }
+
+    // if Interval has been cleared, just start. Else, clear and then start.
+    if (!this.interval) {
+        this.start();
+    }
+    else {
+        this.stop();
+        this.start();
+    }
+
+    // reset game background
+    if (this.background) {
+        this.setBackground(this.background);
+    }
+}
 
 Game.prototype.stop = function() {
     clearInterval(this.interval);
+    delete this.interval;
+    if (this.audio) {
+        this.audio.pause();
+    }
 };
 
 Game.prototype.eachFrame = function(callback) {
@@ -161,9 +192,35 @@ Game.prototype.setBackground = function(url) {
     }
 };
 
+Game.prototype.setVictoryBackground = function (url) {
+    this.victoryBackground = url;
+};
 
+Game.prototype.setDefeatBackground = function (url) {
+    this.defeatBackground = url;
+};
 
+Game.prototype.youWon = function () {
+    if (this.victoryBackground && this.canvas) {
+        this.canvas.style.backgroundImage = 'url(' + this.victoryBackground + ')';
+    }
 
+    this.stop();
+};
+
+Game.prototype.youLost = function () {
+     if (this.defeatBackground && this.canvas) {
+        this.canvas.style.backgroundImage = 'url(' + this.defeatBackground + ')';
+    }
+
+    this.stop();
+};
+
+Game.prototype.setAudio = function(path) {
+    if (path) {
+        this.audio = new Audio(path);
+    }
+}
 
 
 function Wall(options) {
@@ -176,9 +233,8 @@ function Wall(options) {
     this.show = true;
 }
 
-Wall.prototype.update = function(game, context) {
-
-}
+Wall.prototype.update = function(game, context) {}
+Wall.prototype.reset = function () {}
 
 
 Wall.prototype.render = function(game, context) {
@@ -188,7 +244,50 @@ Wall.prototype.render = function(game, context) {
     context.stroke();
 }
 
+function ScoreBoard(options) {
+    this.options = options || {};
+    this.x = options.x;
+    this.y = options.y;
+    this.font = options.font;
+    this.score = options.score || 0;
+    this.noCollide = false;
+    this.display = true;
+}
 
+ScoreBoard.prototype.update = function () {}
+ScoreBoard.prototype.render = function (game, context) {
+    context.font = this.font;
+    context.fillStyle = 'white';
+    context.fillText('SCORE: ' + (this.score || 0), this.x, this.y);
+}
+
+ScoreBoard.prototype.hide = function () {
+    this.display = false;
+}
+
+ScoreBoard.prototype.show = function () {
+    this.display = true;
+}
+
+ScoreBoard.prototype.add = function (points) {
+    if (points) {
+        this.score += points;
+    }
+}
+
+ScoreBoard.prototype.substract = function (points) {
+    if (points) {
+        this.score -= points;
+    }
+}
+
+ScoreBoard.prototype.reset = function () {
+    this.score = this.options.score || 0;
+}
+
+ScoreBoard.prototype.getScore = function () {
+    return this.score;
+}
 
 
 
@@ -199,6 +298,8 @@ function Character(options) {
     this.image.src = options.src;
     this.height = options.height;
     this.width = options.width;
+    this.startX = options.x;
+    this.startY = options.y;
     this.x = options.x;
     this.y = options.y;
 
@@ -256,7 +357,7 @@ Character.prototype.isTouching = function(char) {
 
     // Yeah I'm lazy and googled this, sue me.
 
-    if (!this.show || !char.show) {
+    if (!this.display || !char.display) {
         return false;
     }
 
@@ -336,5 +437,14 @@ Character.prototype.update = function(game, context) {
 Character.prototype.render = function(game, context) {
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
 };
+
+Character.prototype.reset = function () {
+    this.x = this.startX;
+    this.y = this.startY;
+
+    if (this.direction) {
+        delete this.direction;
+    }
+}
 
 Item = Character;

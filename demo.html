@@ -13,6 +13,11 @@
 		var hades_picture = 'http://vignette3.wikia.nocookie.net/disney/images/2/27/Hades_Disney_transparent.png/revision/latest?cb=20130616161031';
 		var hades_fighting_picture = 'http://i.imgur.com/KYNHQCy.gif';
 
+		var you_won = 'https://i.ytimg.com/vi/9D_kq4HQrLM/maxresdefault.jpg';
+		var you_lost = 'http://s2.quickmeme.com/img/c2/c244db2da689cd45e51185fa31b5d417a525939fc425a1230059e6b4b8d4b375.jpg';
+		myGame.setVictoryBackground(you_won);
+		myGame.setDefeatBackground(you_lost);
+
 
 		var wall1 = new Wall({
 			x: 0,
@@ -21,6 +26,15 @@
 			height: 5
 		});
 
+		var score = new ScoreBoard({
+			x: 25,
+			y: 25,
+			width: 100,
+			height: 100,
+			score: 500,
+		});
+
+		myGame.add(score);
 		myGame.add(wall1);
 
 
@@ -48,7 +62,7 @@
 		myGame.eachFrame(function() {
 
 			if (myGame.isKeyPressed('up')) {
-				hero.moveUp(moveAmount);
+				hero.moveUp(moveAmount);						
 			}
 
 			if (myGame.isKeyPressed('down')) {
@@ -73,6 +87,7 @@
 			if (hero.isTouching(enemy)) {
 				hero.setImage(hercules_fighting_picture);
 				enemy.setImage(hades_fighting_picture);
+				score.add(100);
 
 				setTimeout(function() {
 					enemy.hide();
@@ -85,11 +100,24 @@
 				}, 5000);
 			}
 
+			if (score.getScore() > 2000) {
+				myGame.youWon();
+			}
+
 
 		});
 
 		myGame.start();
 
+		function restart() {
+			myGame.restart();
+		}
+
 	</script>
+
+	<div style="text-align:center;">
+  		<button onclick="restart()" >Restart</button><br><br>
+	</div>
+
 </body>
 
